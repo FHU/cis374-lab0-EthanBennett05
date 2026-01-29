@@ -11,6 +11,8 @@ public sealed class HashWordSet : IWordSet
 {
     private HashSet<string> words = new();
 
+    public int Count => words.Count;
+
     public bool Add(string word)
     {
         return words.Add(word);
@@ -52,11 +54,13 @@ public sealed class HashWordSet : IWordSet
 
     public IEnumerable<string> Prefix(string prefix, int k)
     {
+        var normalizedPrefix = Normalize(prefix);
+
         var results = new List<string>();
 
         foreach(var word in words)
         {
-            if(word.StartsWith(prefix))
+            if(word.StartsWith(normalizedPrefix))
             {
                 results.Add(word);
             }
@@ -73,4 +77,11 @@ public sealed class HashWordSet : IWordSet
         throw new NotImplementedException();
     }
 
+    private string Normalize(string word)
+    {
+        if (string.IsNullOrWhiteSpace(word))
+            return string.Empty;
+        
+        return word.Trim().ToLowerInvariant();
+    }
 }
