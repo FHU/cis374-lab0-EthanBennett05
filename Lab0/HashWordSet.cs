@@ -1,4 +1,4 @@
-
+namespace Lab0;
 // [ "ryan", "beau", "caleb", "rye", 
 // "beautiful", "cale", "cephas", "rhino", "cervid", "cecily"
 // "ethan" , "ethel"]
@@ -31,7 +31,20 @@ public sealed class HashWordSet : IWordSet
     /// TODO
     public string? Prev(string word)
     {
-        throw new NotImplementedException();
+        string? best = null;
+
+        // look for a better best
+        foreach(var w in words)
+        {
+            // word < w && w < best
+            if( word.CompareTo(w) > 0
+                && (best is null || w.CompareTo(best) > 0))
+            {
+                best = w;
+            }
+        }
+
+        return best;
     }
 
     public string? Next(string word)
@@ -74,7 +87,17 @@ public sealed class HashWordSet : IWordSet
     /// TODO
     public IEnumerable<string> Range(string lo, string hi, int k)
     {
-        throw new NotImplementedException();
+        var range = new List<string>();
+
+        foreach (var word in words)
+        {
+            if (word.CompareTo(hi) > 0) break;
+
+            range.Add(word);
+            if (range.Count >= k) break;
+        }
+
+        return range;
     }
 
     private string Normalize(string word)
