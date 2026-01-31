@@ -73,7 +73,7 @@ public sealed class HashWordSet : IWordSet
 
         foreach(var word in words)
         {
-            if(word.StartsWith(normalizedPrefix))
+            if (word.StartsWith(normalizedPrefix))
             {
                 results.Add(word);
             }
@@ -89,11 +89,13 @@ public sealed class HashWordSet : IWordSet
     {
         var range = new List<string>();
 
-        foreach (var word in words)
+        foreach (var word in words.OrderBy(w => w))
         {
-            if (word.CompareTo(hi) > 0) break;
+            if (word.CompareTo(lo) < 0) continue;
+            if (word.CompareTo(hi) > 0) continue;
 
             range.Add(word);
+
             if (range.Count >= k) break;
         }
 

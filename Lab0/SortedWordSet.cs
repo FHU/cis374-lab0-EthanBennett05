@@ -8,31 +8,41 @@ public sealed class SortedWordSet : IWordSet
     public bool Add(string word)
     {
         var normalizedword = Normalize(word);
-        words.Add(normalizedword);
         if (normalizedword.Length == 0)
             return false;
+        foreach (var w in words)
+        {
+            if (word.CompareTo(w) == 0)
+                return false;
+        }
+        words.Add(normalizedword);
 
-        return words.Add(word);
+        return true;
     }
 
-     public bool Remove(string word)
+    public bool Remove(string word)
     {
         var normalizedword = Normalize(word);
-        words.Add(normalizedword);
-        if (normalizedword.Length == 0)
-            return false;
 
-        return words.Remove(word);
+        foreach (var w in words)
+        {
+            if (w.CompareTo(word) == 0)
+            { 
+                words.Remove(normalizedword);
+                return true;
+            }
+        }
+        return false;
     }
 
     public bool Contains(string word)
     {
-        var normalizedword = Normalize(word);
-        words.Add(normalizedword);
-        if (normalizedword.Length == 0)
+        if (word.Length == 0 || words.Count == 0)
             return false;
 
-        return words.Contains(word);
+        var normalizedword = Normalize(word);
+
+        return words.Contains(normalizedword);
     }
 
     public string? Next(string word)
@@ -43,7 +53,7 @@ public sealed class SortedWordSet : IWordSet
 
         //var wordsInRange = words.GetViewBetween("a", "m");
 
-        foreach(var candidate in words.GetViewBetween(normalizedword, MAX_STRING))
+        foreach (var candidate in words.GetViewBetween(normalizedword, MAX_STRING))
         {
             if (candidate.CompareTo(normalizedword) > 0)
                 return candidate;
@@ -51,43 +61,45 @@ public sealed class SortedWordSet : IWordSet
         return null;
     }
 
-        public string? Prev(string word)
+    public string? Prev(string word)
     {
+        string? best = null;
         var normalizedword = Normalize(word);
         if (normalizedword.Length == 0 || words.Count == 0)
             return null;
 
-        //var wordsInRange = words.GetViewBetween("a", "m");
 
-        foreach(var candidate in words.GetViewBetween(MIN_STRING, normalizedword))
+        //var wordsInRange = words.GetViewBetween("a", "m");
+        var min_string = "\u0000\u0000\u0000";
+
+        foreach (var candidate in words.GetViewBetween(min_string, normalizedword))
         {
-            if (candidate.CompareTo(normalizedword) > 0)
-                return candidate;
+            if (candidate.CompareTo(normalizedword) < 0)
+                best = candidate;
+            else break;
         }
-        return null;
+        return best;
     }
 
 
     public IEnumerable<string> Prefix(string prefix, int k)
     {
-        if (k<=0 || words.Count == 0)
+        if (k <= 0 || words.Count == 0)
             return new List<string>();
-        
+
         var results = new List<string>();
 
         var normalizedPrefix = Normalize(prefix);
         string lo = normalizedPrefix;
-        string hi = normalizedPrefix+"{";
+        string hi = normalizedPrefix + "{";
 
-        int count = 0;
-
-        foreach( var candidate in  words.GetViewBetween(lo, hi))
+        foreach (var word in words)
         {
-            results.Add(candidate);
-            count++;
-            if (count >= k)
-                return results;
+            if (word.StartsWith(normalizedPrefix))
+                results.Add(word);
+            if (results.Count >= k) break;
         }
+        results.Sort();
 
         return results;
     }
@@ -98,28 +110,25 @@ public sealed class SortedWordSet : IWordSet
 
         foreach (var word in words)
         {
-            if (word.CompareTo(hi) > 0)
-                break;
+            if (word.CompareTo(lo) < 0) continue;
+            if (word.CompareTo(hi) > 0) break;
 
-            
             range.Add(word);
             if (range.Count >= k)
                 break;
         }
 
         return range;
-        
+
     }
 
-     private string Normalize(string word)
+    private string Normalize(string word)
     {
         if (string.IsNullOrWhiteSpace(word))
             return string.Empty;
-        
+
         return word.Trim().ToLowerInvariant();
     }
 
     private const string MAX_STRING = "\uFFFF\uFFFF\uFFFF";
-    private const string MIN_STRING = "\u0000\u0000\u0000";
-
 }
