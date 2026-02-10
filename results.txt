@@ -1,0 +1,46 @@
+Loaded 5,000 raw lines.
+HashSet count:  5,000
+SortedSet count:5,000
+Iterations: 100, k=100
+
+=== CONTAINS (membership) ===
+HashSet.Contains
+  Time: 0 ms
+  Allocated (thread): 40 bytes
+  Checksum: 50
+SortedSet.Contains
+  Time: 0 ms
+  Allocated (thread): 40 bytes
+  Checksum: 50
+
+=== PREFIX (autocomplete) ===
+HashSet.Prefix
+  Time: 16 ms
+  Allocated (thread): 290,632 bytes
+  Checksum: 30,360
+SortedSet.Prefix
+  Time: 12 ms
+  Allocated (thread): 130,744 bytes
+  Checksum: 30,360
+
+=== RANGE (lex range) ===
+HashSet.Range
+  Time: 183 ms
+  Allocated (thread): 10,254,440 bytes
+  Checksum: 73,142
+SortedSet.Range
+  Time: 5 ms
+  Allocated (thread): 248,040 bytes
+  Checksum: 73,142
+
+=== NEXT/PREV (neighbors) ===
+HashSet.Next/Prev
+  Time: 29 ms
+  Allocated (thread): 40 bytes
+  Checksum: 1,375
+SortedSet.Next/Prev
+  Time: 20 ms
+  Allocated (thread): 65,640 bytes
+  Checksum: 1,375
+
+Done.
