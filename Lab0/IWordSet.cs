@@ -10,6 +10,8 @@ public interface IWordSet
     bool Remove(string word);
     bool Contains(string word);
 
+    int Count {get;}
+
     /// <summary>Next word strictly greater than <paramref name="word"/>; null if none.</summary>
     string? Next(string word);
 
